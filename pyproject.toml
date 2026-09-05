@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-stock-research"
+version = "0.1.0"
+description = "A toolkit and worked studies for research on SEC filings and your own price data, run by an AI agent. It does not rate, value or recommend any security."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.11"
+authors = [{ name = "Distill Markets Pty Ltd" }]
+dependencies = [
+    "httpx>=0.27",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "pyarrow>=16",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[project.urls]
+Homepage = "https://distillmarkets.com"
+Documentation = "https://distillmarkets.com/docs"
+
+[tool.setuptools]
+packages = ["distill_toolkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

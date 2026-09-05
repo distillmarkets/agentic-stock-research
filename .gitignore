@@ -1,0 +1,26 @@
+# Secrets. Never commit.
+.env
+
+# Licensed and third-party data. Never commit: API responses, exported panels,
+# price files, derived parquet. Regenerate with your own key and your own files.
+cache/
+*.csv
+*.parquet
+*.feather
+*.pkl
+*.jsonl
+*.zip
+data/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store

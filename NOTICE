@@ -1,0 +1,55 @@
+Agentic Stock Research
+Copyright 2026 Distill Markets Pty Ltd
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+THIRD-PARTY DATA SOURCES AND YOUR OBLIGATIONS
+
+This project contains only original source code and documentation. It contains
+no third-party data and no tools that download third-party data. To use it you
+obtain data yourself from the sources below, and you are solely responsible for
+complying with each source's terms.
+
+1. Distill Markets (the publisher's own API). Requires your own API key. A free
+   key covers part of the examples; the point-in-time history studies need a
+   paid tier. Use of the API and its responses is governed by the Distill
+   Markets terms of service (https://distillmarkets.com/legal/terms), not by
+   this project's licence. Cached responses are for your own use during your
+   subscription. Do not commit them to any repository. Small illustrative
+   samples in documentation are permitted by those terms; bulk reproduction
+   is not.
+
+2. Stooq (stooq.pl / stooq.com). Free end-of-day price files. This project
+   includes no downloader; you obtain the files manually. Review and comply
+   with Stooq's terms and any restrictions of its upstream data vendors, which
+   Stooq discloses on its site. The publisher has not verified Stooq's current
+   terms and makes no statement about what they permit. Do your own diligence.
+
+TRADEMARKS
+
+"Distill Markets" is a trademark of Distill Markets Pty Ltd. Apache-2.0
+section 6 grants no right to use it. Stooq and the names of any other data
+source are the marks of their respective owners and are used here only to
+identify those sources. This project is not affiliated with, endorsed by, or
+certified by any of them.
+
+NO ADVICE, NO WARRANTY
+
+This software and any research published alongside it are general information
+only. They are not financial product advice, do not consider your objectives,
+financial situation or needs, and are not a recommendation about any security.
+Distill Markets Pty Ltd is an Australian company. It does not hold an
+Australian Financial Services licence and does not provide financial product
+advice, personal advice, or any recommendation about a security, in Australia
+or elsewhere.
+
+The software is provided "AS IS" without warranty of any kind, as set out in
+the licence. Nothing in this notice excludes rights you have under laws that
+cannot be excluded, including the Australian Consumer Law and the ASIC Act
+where they apply.
+
+CONFLICT OF INTEREST
+
+The publisher of this project operates Distill Markets, a paid data service
+that the examples and findings use. Authors and the publisher may hold
+positions in securities named in any study in this repository.
