@@ -217,3 +217,13 @@ def test_pin_notices_a_response_that_grew(cache, tmp_path):
     with pytest.warns(RuntimeWarning):
         out = client.pin(["AAA"], pin_file)
     assert out["changed"][0][2].startswith("resized")
+
+
+def test_panel_path_prefers_full_export_over_sample(cache):
+    # synthetic files: only their names matter
+    with pytest.raises(FileNotFoundError, match="pit-sample.csv.gz"):
+        client.panel_path()
+    (cache / "pit-sample.csv.gz").write_bytes(b"")
+    assert client.panel_path() == cache / "pit-sample.csv.gz"
+    (cache / "panel.csv").write_text("")
+    assert client.panel_path() == cache / "panel.csv"

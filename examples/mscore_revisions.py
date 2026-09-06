@@ -20,7 +20,7 @@ OUT = client.CACHE_DIR / "mscore_revisions.json"
 
 
 def main():
-    df = pd.read_csv(client.CACHE_DIR / "panel.csv", parse_dates=["as_of_date"])
+    df = pd.read_csv(client.panel_path(), parse_dates=["as_of_date"])
     snap = df[
         (df.as_of_date == SNAP)
         & df.is_listed_equity

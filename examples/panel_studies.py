@@ -1,6 +1,6 @@
 """Panel studies on the Distill point-in-time fundamentals grid.
 
-Input: <cache>/panel.csv (fetched by examples/fetch_panel.py).
+Input: the panel on disk, the full export or the published sample (client.panel_path).
 Every study uses December as-of snapshots of listed equities with revenue > 0.
 Transitions come from analysis.transitions, which only counts a pair when the
 later snapshot cites a NEWER fiscal year (i.e. a new filing actually arrived;
@@ -18,14 +18,13 @@ import pandas as pd
 
 from distill_toolkit import analysis, client
 
-PANEL = client.CACHE_DIR / "panel.csv"
 
 HEALTH_BINS = [0, 30, 50, 70, 85, 100]
 HEALTH_LABELS = ["0-30", "30-50", "50-70", "70-85", "85-100"]
 
 
 def load_december_snapshots() -> pd.DataFrame:
-    df = pd.read_csv(PANEL, parse_dates=["as_of_date"])
+    df = pd.read_csv(client.panel_path(), parse_dates=["as_of_date"])
     if "health_score" not in df.columns:
         # If the export carries no health score column, the health sections are
         # skipped, not faked; the score lives on /sec/financial-health/{ticker}.
@@ -114,7 +113,7 @@ def study_persistence(p: pd.DataFrame, dec: pd.DataFrame):
 
 def main():
     today = pd.Timestamp.now().strftime("%Y-%m-%d")
-    df = pd.read_csv(PANEL, parse_dates=["as_of_date"])
+    df = pd.read_csv(client.panel_path(), parse_dates=["as_of_date"])
 
     # A free key's export is the current snapshot only (one as_of_date). That runs
     # the cross-sectional study (C: boom cell today) but not the transition studies;

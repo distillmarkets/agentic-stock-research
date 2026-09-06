@@ -28,7 +28,7 @@ def snapshot() -> list[list]:
 
 def load_panel() -> pd.DataFrame:
     """The point-in-time panel, from examples/fetch_panel.py."""
-    return pd.read_csv(client.CACHE_DIR / "panel.csv", parse_dates=["as_of_date"])
+    return pd.read_csv(client.panel_path(), parse_dates=["as_of_date"])
 
 
 def pin_events(panel: pd.DataFrame) -> pd.DataFrame:

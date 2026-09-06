@@ -259,6 +259,8 @@ or a baby bond without going to SEC's own exchange record ticker by ticker.
 Nothing served dates a delisting or states why it happened, so an acquisition, a
 going-private and a deregistration after a deficiency notice arrive as the same
 event, and that difference is the entire economic content of the distress result.
+(Since 2026-09-07 the export carries `listed_until` and `listing_end_source`,
+on 97 of the 3,553 firms that leave the panel; this study predates the column.)
 The price file holds no series for a delisted issuer, not even a final close or a
 cumulative return stub to the delisting date, so the survivorship gap can be
 described from the filings but never closed from inside this data. And "panel

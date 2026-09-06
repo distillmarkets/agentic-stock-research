@@ -24,6 +24,12 @@ not by this project's licence. The parts that matter for a repository:
 That is why `cache/` is gitignored and `scripts/check_hygiene.py` fails the
 build if data files are tracked.
 
+The one exception is published by the publisher itself: a 200-firm cut of the
+point-in-time export attached to a release of this repository (README,
+Install). It is served under the same terms as an API response, for your own
+research; it is not a dataset to redistribute. `scripts/cut_sample.py` is the
+cut, seeded, so a Pro key reproduces it exactly.
+
 ## Stooq
 
 Stooq publishes free end-of-day price files, including a bulk daily bundle

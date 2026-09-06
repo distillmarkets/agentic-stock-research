@@ -31,9 +31,20 @@ cp .env.example .env      # add your Distill API key
 ```
 
 A free key reaches today's snapshot of every filer, the filings, insider,
-revisions and ownership endpoints, at 150 calls a day. Fundamentals history
-needs an Analyst key; the point-in-time export that the longitudinal studies
-start from needs Pro. Price joins need a daily US bundle from
+revisions and ownership endpoints, and ten single-name as-of lookups a day, at
+150 calls a day. The four scored columns (Piotroski, Altman Z, accruals,
+M-Score) and fundamentals history need an Analyst key; the point-in-time export
+that the longitudinal studies start from needs Pro. A cut of that export ships
+with no key at all:
+
+```
+curl -L -o cache/pit-sample.csv.gz https://github.com/distillmarkets/agentic-stock-research/releases/download/pit-sample-2026-06-30/pit-sample.csv.gz
+```
+
+Every quarterly row since 2009 for 200 filers drawn at random from the
+2026-06-30 export, cut by `scripts/cut_sample.py`, so it keeps the panel's
+base rates including the firms that left it. The panel examples read it when
+no full export is on disk. Price joins need a daily US bundle from
 [stooq.com](https://stooq.com/db/h/), unpacked where `STOOQ_DIR` points; the
 toolkit reads it and never downloads it.
 
@@ -41,7 +52,7 @@ toolkit reads it and never downloads it.
 
 One call on a free key, and a question a price file cannot answer alone: how
 much of the filer universe does your price file cover, and does that depend on
-how healthy the firm is?
+how profitable the firm is?
 
 ```python
 import pandas as pd
@@ -54,16 +65,16 @@ snap = pd.read_csv(path).query("is_listed_equity").copy()
 # Which of them has a series in the price file you hold? STOOQ_DIR points at it.
 have = stooq.index()
 snap["priced"] = snap.ticker.map(lambda t: stooq.stooq_key(t) in have)
-snap["z"] = pd.qcut(snap.altman_z.rank(method="first"), 5,
+snap["m"] = pd.qcut(snap.net_margin.rank(method="first"), 5,
                     labels=["weakest", "2", "3", "4", "strongest"])
-print(snap.groupby("z", observed=True).priced.mean().round(2))
+print(snap.groupby("m", observed=True).priced.mean().round(2))
 ```
 
-On today's snapshot the weakest fifth by Altman Z is priced less often than
-the strongest, and the gap is a few points. On the point-in-time export a Pro
-key returns, filter to the 2016-12-31 snapshot and the same lines give 39% for
-the weakest fifth against 70% for the strongest, because the firms that later
-delisted are still in the record and no longer in the price file. [findings/ghost-cohort.md](findings/ghost-cohort.md)
+On today's snapshot the weakest fifth by net margin is priced 81% of the time
+against 94% for the strongest. On the point-in-time export a Pro key returns,
+filter to the 2016-12-31 snapshot and the same lines give 43% against 68%,
+because the firms that later delisted are still in the record and no longer in
+the price file. [findings/ghost-cohort.md](findings/ghost-cohort.md)
 measures that; `python examples/passport.py NVDA` draws one company's filings,
 revisions, share count and insider activity against its price.
 [examples/README.md](examples/README.md) lists the rest.
@@ -121,6 +132,7 @@ Tests are synthetic and live under `tests/`; `pytest` and
 |---|---|
 | `distill_toolkit/` | the package: `client`, `stooq`, `joins`, `analysis`, `charts` |
 | `examples/` | runnable scripts, from an endpoint sweep to a panel study |
+| `scripts/` | the hygiene check CI runs, and the cut that produces the published sample |
 | `findings/` | ten studies, each with its vintage; the reproducing script ships for one and is available on request for the rest. [Index](findings/README.md) |
 | `CORRECTIONS.md` | the dated log of numbers and helpers that did not survive review |
 | `docs/traps.md` | seventeen mistakes a fundamentals-to-prices join invites |

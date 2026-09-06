@@ -308,6 +308,22 @@ def manifest() -> list[tuple[Path, int, float]]:
     )
 
 
+PANEL_FILES = ("panel.csv", "pit-sample.csv.gz")
+
+
+def panel_path() -> Path:
+    """The point-in-time panel on disk: the full export if it is there, else
+    the published 200-firm sample. Raises ``FileNotFoundError`` naming both
+    when neither is; the README's Install section says how to get either."""
+    for name in PANEL_FILES:
+        p = CACHE_DIR / name
+        if p.exists():
+            return p
+    raise FileNotFoundError(
+        f"no panel in {CACHE_DIR}: run examples/fetch_panel.py for {PANEL_FILES[0]} "
+        f"or download {PANEL_FILES[1]} from the release page (README, Install)")
+
+
 def download(path: str, out: Path, params: dict | None = None, timeout: float = 300.0) -> Path:
     """Stream a large response (for example ``/sec/screen/export``) to a file.
 

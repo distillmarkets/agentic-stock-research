@@ -23,7 +23,7 @@ FY_MIN, FY_MAX = 2014, 2023
 
 
 def first_print_panel() -> pd.DataFrame:
-    df = pd.read_csv(client.CACHE_DIR / "panel.csv", parse_dates=["as_of_date"])
+    df = pd.read_csv(client.panel_path(), parse_dates=["as_of_date"])
     dec = df[
         (df.as_of_date.dt.month == 12) & df.is_listed_equity & (df.revenue > 0)
     ].copy()

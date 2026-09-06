@@ -35,7 +35,9 @@ split. The API's field note says this explicitly. Believe it.
 
 Stooq's file set is current listings. Every delisted issuer is absent
 entirely. Distill resolves delisted issuers by design and returns
-`delistedAt`. A joined backtest therefore inherits survivorship bias from the
+`delistedAt`, and the export marks a departed firm's rows with `listed_until`
+where the record has an end date, which on the 2026-06-30 export is a small
+minority of departures. A joined backtest therefore inherits survivorship bias from the
 price side only, while the fundamentals look complete. That is the more
 dangerous configuration. Any cohort study using these prices is biased toward
 survivors and must say so. `examples/return_tests.py` reports its match rate

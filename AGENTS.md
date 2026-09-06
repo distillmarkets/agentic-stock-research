@@ -11,7 +11,10 @@ are [docs/traps.md](docs/traps.md); the numbers that did not survive review are
 - **Distill** serves what companies filed, as it was knowable on a date, for
   every filer including the ones that later delisted, with every revision.
   The bulk lane is one call: `GET /api/v1/sec/screen/export` returns the whole
-  panel, one row per (CIK, quarter end) since 2009. If you also have the
+  panel, one row per (CIK, quarter end) since 2009. A departed firm's rows
+  carry `listed_until` and `listing_end_source` where the record has an end
+  date; on the 2026-06-30 export most departures do not, so panel exit stays an
+  inference from a CIK's last row. If you also have the
   Distill MCP server connected, it serves the same endpoints as tools; use it
   to look, and use `distill_toolkit.client` to fetch what a study reproduces,
   so every input lands in the cache the reproduction reads from.
@@ -29,14 +32,16 @@ the route, and a study planned above its key wastes its budget finding out.
 
 | key | per day | reaches |
 |---|---|---|
-| Free | 150 | today's snapshot export; filings, insider, revisions, ownership per ticker |
-| Analyst | 2,000 | plus fundamentals history and single-name as-of |
+| Free | 150 | today's snapshot export without the four scored columns; filings, insider, revisions, ownership per ticker; ten single-name as-of lookups a day |
+| Analyst | 2,000 | plus the scored columns, fundamentals history and unlimited single-name as-of |
 | Pro | 15,000 | plus the point-in-time export, the bulk lane the longitudinal studies start from |
 
 On Free, design cross-sections on today's snapshot and per-ticker studies over
 a few dozen names. Anything that needs the record as it stood on an earlier
-date needs Pro, and the study README says so rather than substituting
-latest-filing-wins history.
+date needs Pro or the 200-firm sample of the export (README, Install), and the
+study README says which rather than substituting latest-filing-wins history. A
+result on the sample is a base-rate check with 200 firms behind it, and says
+so.
 
 ## Before the first API call
 

@@ -30,7 +30,6 @@ import pandas as pd
 
 from distill_toolkit import client, joins, stooq
 
-PANEL = client.CACHE_DIR / "panel.csv"
 OUT = client.CACHE_DIR / "returns_joined.parquet"
 
 HEALTH_BINS = [0, 30, 50, 70, 85, 100]
@@ -47,7 +46,7 @@ def main():
     if not idx:
         sys.exit("no Stooq files found; pass the bundle path or set STOOQ_DIR")
 
-    df = pd.read_csv(PANEL, parse_dates=["as_of_date"])
+    df = pd.read_csv(client.panel_path(), parse_dates=["as_of_date"])
     multi = df.groupby("ticker").cik.nunique()
     collided = set(multi[multi > 1].index)
     dec = df[

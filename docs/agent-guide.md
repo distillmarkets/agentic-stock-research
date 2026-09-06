@@ -50,8 +50,14 @@ as_of_date, ticker, cik, sector, fiscal_year, revenue, net_margin, gross_margin,
 operating_margin, debt_to_ebitda, net_debt_to_ebitda, rnd_intensity, dso, dio,
 capex_intensity, buyback_intensity, net_dilution, piotroski, interest_coverage,
 dpo, ccc, altman_z, fcf_margin, fcf_conversion, asset_growth, accruals_ratio,
-m_score_5, gp_to_assets, is_listed_equity
+m_score_5, gp_to_assets, is_listed_equity, listed_until, listing_end_source
 ```
+
+A Free key gets the latest snapshot without `piotroski`, `altman_z`,
+`accruals_ratio` and `m_score_5`; Analyst adds them; Pro gets the grid. The
+200-firm sample on the release page (README, Install) is the grid's shape
+with the grid's base rates, and `client.panel_path()` finds whichever is on
+disk.
 
 Facts about it that change how a study is written:
 
@@ -66,7 +72,15 @@ Facts about it that change how a study is written:
   **0% coverage** in Financials and Real Estate, so any Altman cohort is a
   different universe from a health-score cohort.
 - `piotroskiF` in screen results is the latest quarterly score while every other
-  metric is the last full fiscal year. Two vintages on one row.
+  metric is the last full fiscal year. Two vintages on one row. `POST /sec/screen`
+  takes a `fields` array to project row columns, and returns the four scored
+  metrics null on a Free key with a note saying so.
+- `listed_until` and `listing_end_source` (`form25`, `migration`, `crawl`) are
+  set on a departed firm's rows where the record has an end date, and empty
+  otherwise. On the 2026-06-30 export 97 of the 3,553 firms whose last row
+  precedes the final snapshot carry one, so "left the panel" is still read from
+  a CIK's last row (trap 3), and a study that uses the date says how many of
+  its exits have one.
 - There is no market capitalisation and no share count on the panel row, so a
   size control has to use revenue, which conflates scale with business model.
 - The `ticker` is current, is not point-in-time, and is sometimes not the common
@@ -78,14 +92,20 @@ Facts about it that change how a study is written:
   years by default and at least 20 on request, each with `periodEnd`, `revenue`,
   `operatingIncome`, `netIncome`, `operatingCashFlow`, `capEx`, `freeCashFlow`,
   `totalAssets`, `sharesOutstanding`, `epsDiluted`,
-  `weightedAverageSharesDiluted` and provenance fields. Use
+  `weightedAverageSharesDiluted` and provenance fields, plus
+  `earningsReleaseDate` and `earningsReleaseSource` (8-K Item 2.02) per year,
+  null before the summary's `earningsReleaseCoverageFrom` (2023-11-14). The
+  single-ticker `/sec/fundamentals/{t}` carries `nextEarningsDateEstimate` and
+  `nextEarningsDateConfidence`. Use
   `weightedAverageSharesDiluted` for anything multi-year, subject to trap 13.
   A long methodology `note` is repeated verbatim in every response and is most
   of the payload by token count.
 - **`/sec/fundamentals/{t}/as-of/{date}?period=annual`** returns `values`, a
   list of `{conceptGroup, periodEnd, value, filedAt, accessionNumber}`. Filter
   on `conceptGroup`. This is the no-lookahead lane; approximating it with "the
-  prior fiscal year" moves multiples materially (trap 4).
+  prior fiscal year" moves multiples materially (trap 4). A Free key gets ten
+  of these per UTC day, a 404 counts, and the eleventh is a 429
+  `subquota_exceeded` carrying `retryAfter`; Analyst lifts the cap.
 - **`/sec/revisions/{t}`** returns `revisions` rows with `originalValue`,
   `latestValue`, `relDelta`, `originalFiled`, `changedFiled`,
   `changedAccession`, `originalBasis` and `changeType` (`multi-period-recast`,
@@ -99,8 +119,9 @@ Facts about it that change how a study is written:
   no filing date (trap 11). `codeDescription` separates `P` open-market purchase
   and `S` open-market sale from `A` grant, `F` tax withholding, `M` option
   exercise, `G` gift and `J` other, and `M` rows appear twice, once derivative
-  and once not. Several issuers carry a `coverageNote`, and their counts are
-  then a lower bound.
+  and once not. The response carries `coverageFrom` (2024-01-02) and a
+  `coverageNote` when the window predates it, and several issuers carry a
+  `coverageNote` of their own; counts are then a lower bound.
 - **`/sec/ownership/{t}/history`** returns `periods` with `holdersCount`,
   `filerCikCount`, `totalValue`, `totalShares`, `newHolders`, `exitedHolders`,
   the three QoQ fields, `isPeriodComplete` and `corporateActionSuspected`. Eight
