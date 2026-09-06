@@ -708,3 +708,23 @@ def test_fiscal_periods_reads_a_directory_of_cached_responses(tmp_path):
     (tmp_path / "api_v1_sec_revisions_AAA.abc.json").write_text(json.dumps({"revisions": []}))
     h = analysis.fiscal_periods(tmp_path)
     assert sorted(h.fiscal_year) == [2019, 2020] and set(h.cik) == {11}
+
+
+def test_forward_paths_reads_nothing_past_the_listing_end(bundle_root):
+    # synthetic: RAMP keeps trading in the bundle, but the firm's listing ended
+    # three months after the first anchor, so the later prints belong to whoever
+    # holds the symbol now.
+    dec = _dec_frame()
+    dec["listed_until"] = pd.NaT
+    first = dec[(dec.ticker == "RAMP") & (dec.as_of_date == DATES[30])].index
+    dec.loc[first, "listed_until"] = DATES[30] + pd.DateOffset(months=3, days=1)
+    out = analysis.forward_paths(dec, horizons=6).set_index(["ticker", "as_of_date"])
+    cut = out.loc[("RAMP", DATES[30])]
+    assert cut[["r_1", "r_2", "r_3"]].notna().all() and cut[["r_4", "r_5", "r_6"]].isna().all()
+    assert bool(cut.delisted_in_window)
+    # Every other row's raw returns are untouched; only the market adjustment
+    # moves, because the cut row no longer feeds its year's median.
+    untouched = analysis.forward_paths(_dec_frame(), horizons=6).set_index(["ticker", "as_of_date"])
+    raw = [f"r_{k}" for k in range(1, 7)] + ["delisted_in_window"]
+    pd.testing.assert_frame_equal(out.drop(index=("RAMP", DATES[30]))[raw],
+                                  untouched.drop(index=("RAMP", DATES[30]))[raw], check_exact=True)

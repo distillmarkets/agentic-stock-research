@@ -38,7 +38,7 @@ that the longitudinal studies start from needs Pro. A cut of that export ships
 with no key at all:
 
 ```
-curl -L -o cache/pit-sample.csv.gz https://github.com/distillmarkets/agentic-stock-research/releases/download/pit-sample-2026-06-30/pit-sample.csv.gz
+curl -L -o cache/pit-sample.csv.gz https://github.com/distillmarkets/agentic-stock-research/releases/download/pit-sample-2026-09-07/pit-sample.csv.gz
 ```
 
 Every quarterly row since 2009 for 200 filers drawn at random from the
@@ -72,7 +72,7 @@ print(snap.groupby("m", observed=True).priced.mean().round(2))
 
 On today's snapshot the weakest fifth by net margin is priced 81% of the time
 against 94% for the strongest. On the point-in-time export a Pro key returns,
-filter to the 2016-12-31 snapshot and the same lines give 43% against 68%,
+filter to the 2016-12-31 snapshot and the same lines give 46% against 70%,
 because the firms that later delisted are still in the record and no longer in
 the price file. [findings/ghost-cohort.md](findings/ghost-cohort.md)
 measures that; `python examples/passport.py NVDA` draws one company's filings,

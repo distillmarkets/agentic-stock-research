@@ -12,9 +12,12 @@ are [docs/traps.md](docs/traps.md); the numbers that did not survive review are
   every filer including the ones that later delisted, with every revision.
   The bulk lane is one call: `GET /api/v1/sec/screen/export` returns the whole
   panel, one row per (CIK, quarter end) since 2009. A departed firm's rows
-  carry `listed_until` and `listing_end_source` where the record has an end
-  date; on the 2026-06-30 export most departures do not, so panel exit stays an
-  inference from a CIK's last row. If you also have the
+  carry `listed_until` and `listing_end_source` where a Form 25 or Form 15 is
+  on file, which is 3,104 of the 3,672 firms that leave the panel; the rest
+  stopped filing without one, and their exit stays an inference from the last
+  row. Pass the column through to `analysis.forward_paths` and no return is
+  read past the listing end, which matters because a ticker is reused. If you
+  also have the
   Distill MCP server connected, it serves the same endpoints as tools; use it
   to look, and use `distill_toolkit.client` to fetch what a study reproduces,
   so every input lands in the cache the reproduction reads from.

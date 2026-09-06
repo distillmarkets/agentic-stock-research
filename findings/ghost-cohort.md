@@ -259,8 +259,19 @@ or a baby bond without going to SEC's own exchange record ticker by ticker.
 Nothing served dates a delisting or states why it happened, so an acquisition, a
 going-private and a deregistration after a deficiency notice arrive as the same
 event, and that difference is the entire economic content of the distress result.
-(Since 2026-09-07 the export carries `listed_until` and `listing_end_source`,
-on 97 of the 3,553 firms that leave the panel; this study predates the column.)
+(Re-checked 2026-09-07 against the export's new `listed_until` column, which
+dates 3,104 of the 3,672 panel leavers from a Form 25 or Form 15. 85.5% of
+ghost firm-years and 96.9% of stopped-filing ghost firm-years now carry a
+listing end, form25 10,149 firm-years against form15 1,669, so "stopped filing"
+above is in nearly every case a dated delisting. The column also finds what the
+probe could only bound: 163 dated firms have a ticker with a live series in the
+bundle, 704 firm-years counted as priced above, of which 125 firm-years over 29
+firms pass the 14-day close test and then read a successor's prices past the
+listing end. That is 0.4% of usable firm-years, and `forward_paths` now stops
+at the date. The as-of screens also drop an issuer from its exit date, which
+takes the December universe to 45,605 firm-years and the ghost share to 30.4%.
+The numbers in this document are from the earlier export and stand as its
+vintage.)
 The price file holds no series for a delisted issuer, not even a final close or a
 cumulative return stub to the delisting date, so the survivorship gap can be
 described from the filings but never closed from inside this data. And "panel

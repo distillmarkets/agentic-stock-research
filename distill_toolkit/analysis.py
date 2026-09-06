@@ -167,7 +167,11 @@ def forward_paths(dec: pd.DataFrame, horizons: int = 24, keep: Sequence[str] = (
     ``delisted_in_window`` is a statement about the file, not about the company:
     a current-listings bundle deletes a delisted symbol instead of ending its
     series, so on such a bundle the flag fires on exactly the entry years whose
-    last horizon sits past the file's right edge.
+    last horizon sits past the file's right edge. A ``listed_until`` column on
+    ``dec`` (the export carries one per firm) is the statement about the
+    company: no return is read past it, and the flag is set from it, because a
+    symbol is reused and a series that runs on past a firm's listing end is
+    quoting whoever holds the symbol now.
 
     A close is found by ``numpy.searchsorted`` on the ticker's own date array,
     once per horizon for the whole ticker, rather than by reindexing the series
@@ -184,6 +188,8 @@ def forward_paths(dec: pd.DataFrame, horizons: int = 24, keep: Sequence[str] = (
             continue
         ci, cv = c.index.to_numpy(), c.to_numpy(dtype=float)
         last = c.index[-1]
+        end = (pd.to_datetime(g.listed_until).to_numpy() if "listed_until" in g.columns
+               else np.full(len(g), np.datetime64("NaT", "ns")))
         anchors = pd.DatetimeIndex(g.as_of_date)
         av = anchors.to_numpy()
         j0 = np.searchsorted(ci, av, side="right") - 1
@@ -195,7 +201,7 @@ def forward_paths(dec: pd.DataFrame, horizons: int = 24, keep: Sequence[str] = (
         ok &= p0 > 0
         if not ok.any():
             continue
-        g, anchors, p0 = g[ok], anchors[ok], p0[ok]
+        g, anchors, p0, end = g[ok], anchors[ok], p0[ok], end[ok]
         edge = np.datetime64(last) + np.timedelta64(45, "D")
         path = np.empty((len(g), horizons + 1), dtype=float)
         grid = av[ok]
@@ -204,9 +210,9 @@ def forward_paths(dec: pd.DataFrame, horizons: int = 24, keep: Sequence[str] = (
             jk = np.searchsorted(ci, grid, side="right") - 1
             px = np.where(jk >= 0, cv[np.clip(jk, 0, len(cv) - 1)], np.nan)
             col = px / p0 - 1
-            col[grid > edge] = np.nan
+            col[(grid > edge) | (grid > end)] = np.nan
             path[:, k] = col
-        ended = grid > np.datetime64(last)
+        ended = (grid > np.datetime64(last)) | (grid > end)
         for i, r in enumerate(g.itertuples()):
             row = {"cik": r.cik, "ticker": t, "year": r.year, "as_of_date": r.as_of_date,
                    "delisted_in_window": bool(ended[i])}

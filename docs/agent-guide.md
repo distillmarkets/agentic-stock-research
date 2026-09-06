@@ -75,12 +75,21 @@ Facts about it that change how a study is written:
   metric is the last full fiscal year. Two vintages on one row. `POST /sec/screen`
   takes a `fields` array to project row columns, and returns the four scored
   metrics null on a Free key with a note saying so.
-- `listed_until` and `listing_end_source` (`form25`, `migration`, `crawl`) are
-  set on a departed firm's rows where the record has an end date, and empty
-  otherwise. On the 2026-06-30 export 97 of the 3,553 firms whose last row
-  precedes the final snapshot carry one, so "left the panel" is still read from
-  a CIK's last row (trap 3), and a study that uses the date says how many of
-  its exits have one.
+- `listed_until` and `listing_end_source` (`form25` exchange delisting,
+  `form15` Section 12 deregistration, `migration`, `crawl`) are set on every
+  row of a firm whose listing has ended and empty otherwise. On the export of
+  2026-09-07, 3,104 of the 3,672 firms whose last row precedes the final
+  snapshot carry one (form25 2,469, form15 515); the 568 without stopped filing
+  with neither form on file, are small (median last revenue $27m against
+  $303m), and their exit stays an inference from the last row (trap 3). The
+  date runs a median 50 days after the firm's last panel row. An acquisition
+  and a failure both end in a Form 25, so the source does not separate them.
+- **A ticker is reused.** 163 dated firms have a ticker with a live series in
+  a current-listings price file, and for 29 of them a close still sits within
+  14 days of a snapshot that predates the listing end, so the entry test
+  passes and the series then runs on under a different company. Keep
+  `listed_until` on the frame you pass to `forward_paths`: it reads no return
+  past that date and sets `delisted_in_window` from it.
 - There is no market capitalisation and no share count on the panel row, so a
   size control has to use revenue, which conflates scale with business model.
 - The `ticker` is current, is not point-in-time, and is sometimes not the common
