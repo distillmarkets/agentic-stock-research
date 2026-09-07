@@ -74,7 +74,10 @@ On today's snapshot the weakest fifth by net margin is priced 81% of the time
 against 94% for the strongest. On the point-in-time export a Pro key returns,
 filter to the 2016-12-31 snapshot and the same lines give 46% against 70%,
 because the firms that later delisted are still in the record and no longer in
-the price file. [findings/ghost-cohort.md](findings/ghost-cohort.md)
+the price file. With no key at all, the 200-firm sample from Install gives the
+same picture: 28% of its listed firm-years since 2010 have no price series,
+against 30% on the full export, and 87 of its firms carry the date their
+listing ended. [findings/ghost-cohort.md](findings/ghost-cohort.md)
 measures that; `python examples/passport.py NVDA` draws one company's filings,
 revisions, share count and insider activity against its price.
 [examples/README.md](examples/README.md) lists the rest.
@@ -141,6 +144,7 @@ Tests are synthetic and live under `tests/`; `pytest` and
 | `research/` | one worked example: a study, the review that broke two of its claims, and the corrected re-run. [Index](research/README.md) |
 | `templates/study/` | the skeleton of a new study |
 | `agents/` | the study and review roles, for Claude Code, Codex and any tool that reads `AGENTS.md` |
+| [Releases](https://github.com/distillmarkets/agentic-stock-research/releases) | the point-in-time sample: 200 filers, every quarter since 2009, no key needed |
 
 ## Rules
 
