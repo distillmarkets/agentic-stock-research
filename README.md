@@ -120,8 +120,8 @@ A study is a folder under `research/` with a `study.py` that reproduces every
 number from files on disk, a `README.md` that states the question, the vintage,
 the n, the placebo and the match rate, and nothing else. Copy
 [templates/study/](templates/study/) to start one. A study that survives an
-adversarial re-run moves to `findings/`; one worked example of that loop is
-kept under `research/`.
+adversarial re-run moves to `findings/`; worked examples of that loop, each
+study beside its review, are kept under `research/`.
 
 A new data source is a reader module, a terms entry and a coverage study;
 [docs/adding-a-source.md](docs/adding-a-source.md) is the checklist. A helper
