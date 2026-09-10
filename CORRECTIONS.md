@@ -519,6 +519,109 @@ window with none is ``untestable``. Test in `tests/test_joins.py`.
 
 ---
 
+## 2026-09-10
+
+One defect, in the Stooq reader, and the re-run it forced. The re-run ran
+against the 2026-09-07 panel and the same Stooq bundle through 2026-08-14, from
+files already on disk, with no new API call.
+
+### 21. The Stooq reader indexed the bundle's fund files alongside its equity files
+
+`stooq.index()` walked every `*.us.txt` file under the bundle root, which
+includes the `nasdaq etfs` and `nyse etfs` folders. A fund that has taken the
+symbol of a company which delisted therefore answered to that company's ticker,
+and a firm-year keyed to it read as **priced** with a fund's price history
+standing in for a dead issuer's.
+
+**Size, measured on the 2026-09-07 panel.** The bundle holds 13,277 symbols:
+9,622 equity and 3,655 fund, and **no symbol appears as both**, so the defect
+never substituted one series for another. Its whole effect is firm-years counted
+as priced that should have been ghosts. Of the 3,435 distinct panel tickers with
+a match, **62 (1.8%) resolved to a fund file**; restricted to tickers carrying a
+listing end, **48 of 342 (14.0%)** did, which is the population the symbol
+reuse concentrates in (`AIQ`, `AMID`, `ARB`, `ARIA`, `ASIA`, `AVIV`, `AWAY`,
+`BBLU`, `BUFF`, `CALI`, `CIR`, `CWI`, `DCMT`, `DIAL`, `DRIV` among them). On the
+December universe that is **192 firm-years over 51 CIKs**, 0.63% of the
+firm-years the old index called priced.
+
+**Fixed** in the same commit that records this entry: `index()`, `bars()`,
+`closes()` and `px()` are equities only and take a keyword-only
+`include_etfs=False`; the index and bars caches are keyed on the flag; an
+equity file wins any symbol present in both sets. Tests:
+`tests/test_stooq.py::test_index_excludes_funds_by_default`,
+`::test_a_reused_symbol_reads_as_absent_rather_than_as_the_fund`,
+`::test_the_two_index_variants_do_not_share_a_cache_entry`. The audit idiom, a
+diff of the two index variants, is written up as trap 18 in
+[docs/traps.md](docs/traps.md).
+
+**Which published figures move, and by how much.** The ghost-cohort study was
+re-run and [findings/ghost-cohort.md](findings/ghost-cohort.md) now states the
+2026-09-07 vintage throughout. Two separate things moved it, and blending them
+would misattribute the correction:
+
+| | December firm-years | ghost | ghost share | ghost CIKs |
+|---|---|---|---|---|
+| as published, 2026-09-03 panel, funds in the index | 45,428 | 15,076 | 33.19% | 2,833 |
+| 2026-09-07 panel, funds in the index | 43,474 | 13,237 | 30.45% | 2,614 |
+| 2026-09-07 panel, equities only (published now) | 43,474 | 13,429 | **30.89%** | 2,663 |
+
+- **The fund fix alone**, holding the panel fixed, moves the ghost cohort by
+  **+192 firm-years, +49 CIKs, +0.44pp**. That is the whole of this correction.
+  A separate reused-ticker study, held by the publisher and written with its own
+  bundle reader, arrived at the same 192 independently.
+- **The panel vintage alone** takes the December universe from 45,428 firm-years
+  to 43,474. The published headline cannot be reproduced exactly because the
+  2026-09-03 export no longer exists on disk, so the first row above is the
+  published figure rather than a re-measurement. A four-day-apart export of the
+  same endpoint holding about 2,000 fewer December firm-years is a data
+  observation in its own right and is not explained here.
+
+Figures inside the study that move by more than rounding, all in the same
+direction the two changes predict: the Stooq match rate 66.81% to **69.11%** and
+the usable rate 63.40% to **66.23%**; the still-filing share of ghost firm-years
+19.3% to **12.2%**; the forward exit ratio 13.4x to **17.4x**; the low-health
+two-year exit rate 21.4% against 4.7% to **21.8% against 4.1%**; the boom-cell
+random-drop null 16.64pp +/- 1.25 at z = -1.52 to **16.55pp +/- 1.17 at
+z = -1.69**. Two statements weaken: "every observed gap is more than five times
+the 95th percentile of the absolute placebo gap" becomes **more than 4.8 times**
+(the minimum, on the median margin change, is 4.83), and the nine 2025
+top-revenue-decile misses named in entry 8 are **five** on this panel: `ACF`,
+`BK`, `DISH`, `FMCC` and `FNMA`. The other four are not matched here, they are
+gone. `HES`, `JWN`, `WBA` and `X` have no December 2025 row in this export's
+universe at all, which is the panel vintage moving, not the fund fix.
+One sentence is removed rather than restated: the earlier version quoted a
+December universe of 45,605 firm-years and a 30.4% ghost share from an
+as-of-screen construction that is not the one this study runs and that was not
+re-run.
+
+**The reused-ticker counts, reconciled.** Two figures were in circulation and
+they count different populations, so neither superseded the other; both were
+also fund-contaminated. Over **all 3,104 ended firms in the panel**, 354 had a
+live series under their last panel ticker (247 beginning after the listing end,
+107 spanning it); equities only, that is **303, of which 202 reissued and 101
+spanning**. Over the **December study universe**, which is narrower (listed
+equity, revenue above zero, unambiguous ticker, 2010-2025), the count was 163
+firms and 704 firm-years; equities only it is **120 firms and 544 firm-years**,
+of which **114 firm-years over 25 firms** pass the 14-day fresh-close test at a
+snapshot preceding the listing end. **Every one of those 25 is a spanning
+symbol, not a reissued one**: a series that begins after the listing end has no
+close before it and cannot pass an entry test, so a reissue is a forward-window
+exposure only. `docs/agent-guide.md` said "163 dated firms ... 29 of them" and
+now states the 3,104-firm census with the December-universe figure beside it.
+
+**Every other Stooq match rate published in this repository was computed with
+the fund files in the index and is overstated.** The direction is known and the
+size is measured on the one universe re-run here: 0.44pp of December firm-years,
+0.63% of the priced set. The sibling studies (`findings/market-cap.md`,
+`findings/share-issuance.md`, `findings/nulls.md`, `findings/survival-clock.md`,
+`findings/what-moves.md`, `research/pre-exit-signature/`) were not re-run, so
+their match rates stand at their own vintage with that bias, and each now says
+so and points here. No result in them is joined through a symbol that changed
+which file it reads, because no symbol is in both sets; what changes is that a
+small number of their priced firm-years were a fund's price history.
+
+---
+
 General information from public SEC filings, not financial product advice.
 Companies are named above only as facts they exhibit in the data. See the
 [disclosure](README.md#disclosure).

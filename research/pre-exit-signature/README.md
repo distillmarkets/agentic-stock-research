@@ -130,9 +130,12 @@ comparable. **Every count in this document mixes acquisition, going private,
 deregistration, exchange deficiency and bankruptcy into one event.** The panel
 carries nothing that separates them, and neither does the probe.
 
-Against the ghost cohort: that study found 2,833 of 5,960 December CIKs with no
-price series, and a two-year panel-exit rate of 31.83% for ghost firm-years
-against 2.37% for priced. This study's unconditional eight-quarter rate is
+Against the ghost cohort: on the vintage this study was run against, that study
+found 2,833 of 5,960 December CIKs with no price series, and a two-year
+panel-exit rate of 31.83% for ghost firm-years against 2.37% for priced. Both
+figures have since moved, on a newer panel and an equities-only Stooq index, to
+2,663 of 5,726 CIKs and 34.37% against 1.98%
+([CORRECTIONS.md](../../CORRECTIONS.md), entry 21). This study's unconditional eight-quarter rate is
 **29.97% for unpriced firm-quarters against 2.33% for priced** (n = 54,205 and
 83,582), which reproduces the published pair on a quarterly panel and a different
 exit definition.

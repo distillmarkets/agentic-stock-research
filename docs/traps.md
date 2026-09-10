@@ -252,6 +252,45 @@ segment from its own start (`(1 + x_6) / (1 + x_3) - 1`) or compute daily
 abnormal returns bar to bar. Three studies wrote a segment helper before this
 was written down.
 
+## Trap 18: a reused symbol in the price bundle may not be a company at all
+
+Stooq ships its US bundle in `{nasdaq,nyse,nysemkt} stocks` and
+`{nasdaq,nyse} etfs` folders, and a symbol freed by a delisting is reissued to
+whatever asks for it next, which is often a fund. Walk every `*.us.txt` under
+the bundle root and a dead issuer's ticker resolves to an ETF's price history,
+with no field anywhere in the joined frame saying so. The firm-year then counts
+as priced and carries a series that is a basket, not a business.
+
+Seen in practice: on one December universe of 43,474 firm-years, 62 of the 3,435
+matched panel tickers pointed at a fund file, and among tickers carrying a
+listing end it was 48 of 342, one in seven. It never substituted one series for
+another, because no symbol in that bundle is both a stock file and a fund file;
+what it did was call 192 firm-years priced that had no equity series at all,
+which is exactly the delisted tail a survivorship measurement is trying to
+count.
+
+`stooq.index`, `bars`, `closes` and `px` are equities only. Do not undo that by
+pointing `STOOQ_DIR` at a directory whose folder names it cannot read: the test
+is a parent folder name ending in `etfs`.
+
+Protocol: audit any symbol list you inherit by diffing the two index variants,
+and treat the difference as a list of names to check, never as coverage to
+recover.
+
+```python
+from distill_toolkit import stooq
+
+equities = stooq.index()
+everything = stooq.index(include_etfs=True)
+funds = set(everything) - set(equities)
+suspect = sorted(funds & {stooq.stooq_key(t) for t in panel.ticker})
+```
+
+Any ticker in `suspect` was priced off a fund file by any code that read the
+whole bundle, and `stooq.bars(t, include_etfs=True)` shows what it was reading.
+A symbol in both sets would be resolved to the equity file, so the diff is the
+whole exposure. CORRECTIONS.md entry 21 has the measurement.
+
 ## Verification protocol
 
 Every load-bearing figure in `findings/` was checked at least two ways.

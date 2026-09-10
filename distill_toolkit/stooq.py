@@ -1,7 +1,9 @@
 """Readers for Stooq end-of-day files that you have downloaded yourself.
 
 This module contains no downloader and never contacts stooq.com. It reads a
-bundle or directory that is already on your disk. Obtaining the files, and
+bundle or directory that is already on your disk. Readers here cover equities
+only by default: Stooq's ``* etfs`` folders are excluded unless you ask for them,
+because funds inherit the symbols of companies that have delisted. Obtaining the files, and
 complying with Stooq's terms and those of its upstream vendors, is your
 responsibility. See NOTICE and docs/data-sources.md.
 
@@ -35,8 +37,8 @@ if TYPE_CHECKING:
 
 Bar = tuple[str, float, int]
 
-_index_cache: dict[Path, dict[str, Path]] = {}
-_bars_cache: dict[tuple[Path, str], list[Bar] | None] = {}
+_index_cache: dict[tuple[Path, bool], dict[str, Path]] = {}
+_bars_cache: dict[tuple[Path, str, bool], list[Bar] | None] = {}
 
 
 def default_root() -> Path:
@@ -67,28 +69,52 @@ def extract_bundle(zip_path: str | Path, dest: str | Path | None = None) -> Path
     return dest_root
 
 
-def index(root: str | Path | None = None) -> dict[str, Path]:
-    """``{TICKER: path}`` over every ``*.us.txt`` under the root. One walk, then cached."""
+def _is_etf(path: Path, root: Path) -> bool:
+    """True when a price file sits under one of Stooq's ``* etfs`` folders."""
+    try:
+        parts = path.relative_to(root).parts[:-1]
+    except ValueError:
+        parts = path.parts[:-1]
+    return any(seg.lower().endswith("etfs") for seg in parts)
+
+
+def index(root: str | Path | None = None, *, include_etfs: bool = False) -> dict[str, Path]:
+    """``{TICKER: path}`` over the ``*.us.txt`` files under the root. One walk, then cached.
+
+    **Equities only by default.** Stooq ships funds in sibling ``* etfs`` folders,
+    and a fund routinely carries a symbol that a delisted company used to hold, so
+    indexing the whole tree prices dead issuers off a successor ETF. Pass
+    ``include_etfs=True`` for the full file set; equity files still win any symbol
+    that appears in both.
+    """
     r = _resolve(root)
-    if r not in _index_cache:
+    key = (r, include_etfs)
+    if key not in _index_cache:
         m: dict[str, Path] = {}
-        for p in r.rglob("*.us.txt"):
+        paths = sorted(r.rglob("*.us.txt"))
+        equities = [p for p in paths if not _is_etf(p, r)]
+        funds = [p for p in paths if _is_etf(p, r)] if include_etfs else []
+        for p in equities + funds:
             m.setdefault(p.name[: -len(".us.txt")].upper(), p)
-        _index_cache[r] = m
-    return _index_cache[r]
+        _index_cache[key] = m
+    return _index_cache[key]
 
 
-def bars(ticker: str, root: str | Path | None = None) -> list[Bar] | None:
+def bars(
+    ticker: str, root: str | Path | None = None, *, include_etfs: bool = False
+) -> list[Bar] | None:
     """``[(YYYYMMDD, close, volume)]`` ascending, or ``None`` if the symbol has no file.
 
     ``None`` means absent from current listings. Delisted issuers are simply not
-    in the Stooq file set.
+    in the Stooq file set. Reads the equities-only index unless ``include_etfs``
+    is set, so a symbol now carried by a fund reads as absent rather than
+    returning the fund's prices.
     """
     r = _resolve(root)
-    key = (r, stooq_key(ticker))
+    key = (r, stooq_key(ticker), include_etfs)
     if key in _bars_cache:
         return _bars_cache[key]
-    path = index(r).get(key[1])
+    path = index(r, include_etfs=include_etfs).get(key[1])
     if path is None:
         _bars_cache[key] = None
         return None
@@ -108,11 +134,13 @@ def bars(ticker: str, root: str | Path | None = None) -> list[Bar] | None:
     return out
 
 
-def closes(ticker: str, root: str | Path | None = None) -> "pd.Series | None":
+def closes(
+    ticker: str, root: str | Path | None = None, *, include_etfs: bool = False
+) -> "pd.Series | None":
     """Closes as a pandas Series indexed by date, or ``None`` if uncovered."""
     import pandas as pd
 
-    b = bars(ticker, root)
+    b = bars(ticker, root, include_etfs=include_etfs)
     if not b:
         return None
     s = pd.Series(
@@ -133,9 +161,11 @@ def asof(series: list[Bar], yyyymmdd: str) -> tuple[str, float] | None:
     return (series[i][0], series[i][1]) if i >= 0 else None
 
 
-def px(ticker: str, iso_date: str, root: str | Path | None = None) -> float | None:
+def px(
+    ticker: str, iso_date: str, root: str | Path | None = None, *, include_etfs: bool = False
+) -> float | None:
     """Close on or before an ISO date such as ``2026-01-31``. ``None`` if uncovered."""
-    b = bars(ticker, root)
+    b = bars(ticker, root, include_etfs=include_etfs)
     if not b:
         return None
     r = asof(b, iso_date.replace("-", ""))

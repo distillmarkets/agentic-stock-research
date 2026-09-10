@@ -97,3 +97,43 @@ def test_close_at_takes_a_string_a_date_or_a_timestamp(bundle_root):
     same = {stooq.close_at("RAMP", d) for d in
             ("2021-01-08", DATES[4], DATES[4].date(), pd.Timestamp("2021-01-08"))}
     assert same == {104.0}
+
+
+@pytest.fixture
+def bundle_with_a_fund(tmp_path):
+    """A bundle where a delisted company's old symbol is now carried by an ETF.
+
+    Stooq ships funds in sibling ``* etfs`` folders. GHOST here stands for a
+    company that stopped filing; the symbol is live again as a fund.
+    """
+    us = tmp_path / "root" / "data" / "daily" / "us"
+    eq = us / "nasdaq stocks" / "1"
+    fund = us / "nasdaq etfs"
+    eq.mkdir(parents=True)
+    fund.mkdir(parents=True)
+    (eq / "live.us.txt").write_text(HEADER + _row("LIVE", "20240105", 10.0))
+    (fund / "ghost.us.txt").write_text(HEADER + _row("GHOST", "20240105", 99.0))
+    return us.parents[2]
+
+
+def test_index_excludes_funds_by_default(bundle_with_a_fund):
+    root = bundle_with_a_fund
+    assert set(stooq.index(root)) == {"LIVE"}
+    assert set(stooq.index(root, include_etfs=True)) == {"LIVE", "GHOST"}
+
+
+def test_a_reused_symbol_reads_as_absent_rather_than_as_the_fund(bundle_with_a_fund):
+    """The correction this guards: a dead issuer must not quote a successor fund."""
+    root = bundle_with_a_fund
+    assert stooq.bars("GHOST", root) is None
+    assert stooq.px("GHOST", "2024-01-05", root) is None
+    assert stooq.closes("GHOST", root) is None
+    # Opting in still reaches the fund, and equities are unaffected either way.
+    assert stooq.bars("GHOST", root, include_etfs=True) == [("20240105", 99.0, 1000)]
+    assert stooq.bars("LIVE", root) == [("20240105", 10.0, 1000)]
+
+
+def test_the_two_index_variants_do_not_share_a_cache_entry(bundle_with_a_fund):
+    root = bundle_with_a_fund
+    assert stooq.index(root, include_etfs=True) is not stooq.index(root)
+    assert len(stooq.index(root, include_etfs=True)) == len(stooq.index(root)) + 1

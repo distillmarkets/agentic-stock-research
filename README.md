@@ -17,9 +17,9 @@ together.
 
 **Weak companies fall sooner, not further.** Each line is a health bucket. A tenth of the weakest firms are 50 points behind the market within seven months; the strongest take seventeen. The average outcome is similar; the timing of the bad tail is not. [How it was measured](findings/survival-clock.md)
 
-![A third of December filer-years since 2010 have no series in a current price file, and the share rises as health falls](findings/charts/ghost-share.png)
+![Just under a third of December filer-years since 2010 have no series in a current price file, and the share rises as health falls](findings/charts/ghost-share.png)
 
-**Free price data leaves out the companies that failed.** A current-listings price file has no series for a third of SEC filer-years since 2010, because those firms later delisted. The missing share rises as financial health falls, so any backtest on that file is a survivor's result. [How it was measured](findings/ghost-cohort.md)
+**Free price data leaves out the companies that failed.** A current-listings price file has no series for close to a third of SEC filer-years since 2010, because those firms later delisted. The missing share rises as financial health falls, so any backtest on that file is a survivor's result. [How it was measured](findings/ghost-cohort.md)
 
 ## Install
 
@@ -95,7 +95,7 @@ claude mcp add --transport http distill https://mcp.distillmarkets.com \
 In claude.ai or Claude Desktop, add a connector at `mcp.distillmarkets.com`.
 
 For studies, the agent works in this checkout. [AGENTS.md](AGENTS.md) is the
-brief: what the two sources are for, the seventeen ways the join goes wrong,
+brief: what the two sources are for, the eighteen ways the join goes wrong,
 what a finished study has to contain, and how to spend an API budget. Point
 Claude Code, Codex, or any agent that reads `AGENTS.md` at the checkout and
 ask the question. Two roles are defined in [agents/](agents/README.md): a
@@ -138,7 +138,7 @@ Tests are synthetic and live under `tests/`; `pytest` and
 | `scripts/` | the hygiene check CI runs, and the cut that produces the published sample |
 | `findings/` | ten studies, each with its vintage; the reproducing script ships for one and is available on request for the rest. [Index](findings/README.md) |
 | `CORRECTIONS.md` | the dated log of numbers and helpers that did not survive review |
-| `docs/traps.md` | seventeen mistakes a fundamentals-to-prices join invites |
+| `docs/traps.md` | eighteen mistakes a fundamentals-to-prices join invites |
 | `docs/adding-a-source.md` | how to add another file-on-disk source, the way the Stooq reader was added |
 | `docs/agent-guide.md` | the long form of `AGENTS.md`: shapes, helpers, budget |
 | `research/` | one worked example: a study, the review that broke two of its claims, and the corrected re-run. [Index](research/README.md) |

@@ -21,8 +21,8 @@ are [docs/traps.md](docs/traps.md); the numbers that did not survive review are
   Distill MCP server connected, it serves the same endpoints as tools; use it
   to look, and use `distill_toolkit.client` to fetch what a study reproduces,
   so every input lands in the cache the reproduction reads from.
-- **The price file** serves prices for names that still trade. A third of
-  filer-years have no price series, and it is the weakest third (trap 3).
+- **The price file** serves prices for names that still trade. Close to a third
+  of filer-years have no price series, and it is the weakest third (trap 3).
 
 The fundamentals are complete and the prices are not. Every result joined to
 prices is a survivor's result until you say what fraction of the universe

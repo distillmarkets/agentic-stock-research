@@ -51,6 +51,12 @@ The December universe is **45,428 firm-years over 5,960 CIKs and 6,038 tickers**
 - `net_dilution` is present on 66.25% of December rows and `buyback_intensity`
   on 49.40%.
 
+The Stooq index behind that rate read the bundle's fund folders alongside its
+equity folders, so a delisted issuer whose symbol a fund now carries counted as
+priced. The reader is equities only from 2026-09-10 and this study was not re-run:
+the rate stands at its own vintage and is overstated by roughly what entry 21 of
+[CORRECTIONS.md](../CORRECTIONS.md) measures, 0.44pp of December firm-years.
+
 A current-listings bundle deletes a delisted symbol rather than ending its
 series, so a firm that stopped trading inside a window is absent from this
 sample rather than present with a bad return. **Every price-based rate here is a

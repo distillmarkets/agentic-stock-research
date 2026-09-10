@@ -33,6 +33,12 @@ this sample at all rather than in it with a bad return. **Every share and every
 ratio below is a share for survivors and a floor**, and nothing in this data
 bounds the difference.
 
+The Stooq index behind that rate read the bundle's fund folders alongside its
+equity folders, so a delisted issuer whose symbol a fund now carries counted as
+priced. The reader is equities only from 2026-09-10 and this study was not re-run:
+the rate stands at its own vintage and is overstated by roughly what entry 21 of
+[CORRECTIONS.md](../CORRECTIONS.md) measures, 0.44pp of December firm-years.
+
 A December panel snapshot cites the previous fiscal year on **76.4%** of panel
 rows and the current one on 23.6%; in the Part A analysis sample the same split
 is **74.4 / 25.6**. That split is why two blocks are needed for the two fiscal

@@ -44,6 +44,12 @@ below is a floor**, and the floor is not uniform: the missing third is
 concentrated in the low-health and small-revenue cells, which are the cells this
 study claims the most about.
 
+The Stooq index behind that rate read the bundle's fund folders alongside its
+equity folders, so a delisted issuer whose symbol a fund now carries counted as
+priced. The reader is equities only from 2026-09-10 and this study was not re-run:
+the rate stands at its own vintage and is overstated by roughly what entry 21 of
+[CORRECTIONS.md](../CORRECTIONS.md) measures, 0.44pp of December firm-years.
+
 ## The clock
 
 Market-adjusted, Kaplan-Meier, entry years 2010-2025:

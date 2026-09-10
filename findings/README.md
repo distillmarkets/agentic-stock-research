@@ -8,7 +8,7 @@ in [CORRECTIONS.md](../CORRECTIONS.md) supersedes the same number anywhere else.
 | study | what it found |
 |---|---|
 | [survival-clock.md](survival-clock.md) | A health label times the fall: a tenth of the weakest bucket is 50 points behind by month 7, the strongest by month 17. Recovery is flat everywhere. |
-| [ghost-cohort.md](ghost-cohort.md) | A third of SEC firm-years since 2010 have no price series, the weakest third. Exit base rates on priced data are understated four times. |
+| [ghost-cohort.md](ghost-cohort.md) | Close to a third of SEC firm-years since 2010 have no price series, the weakest third. Exit base rates on priced data are understated five times. |
 | [pre-exit-signature.md](pre-exit-signature.md) | A firm with Altman Z below 1.8 stops filing within two years 10% to 27% of the time depending on how the exit is dated. The signature is a level two years out, not a slope. |
 | [vintage-gap.md](vintage-gap.md) | Restatement changes 5% of the rows a screen returns. Firms the history endpoint no longer serves change it by a third. |
 | [eightk-items.md](eightk-items.md) | Earnings 8-Ks print on a day twice a quiet day. The rest run 1.0 to 1.5 times, seven of eighteen item classes are indistinguishable from a quiet day, and no class has a direction or a drift afterwards. |

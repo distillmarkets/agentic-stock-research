@@ -84,12 +84,16 @@ Facts about it that change how a study is written:
   $303m), and their exit stays an inference from the last row (trap 3). The
   date runs a median 50 days after the firm's last panel row. An acquisition
   and a failure both end in a Form 25, so the source does not separate them.
-- **A ticker is reused.** 163 dated firms have a ticker with a live series in
-  a current-listings price file, and for 29 of them a close still sits within
-  14 days of a snapshot that predates the listing end, so the entry test
-  passes and the series then runs on under a different company. Keep
-  `listed_until` on the frame you pass to `forward_paths`: it reads no return
-  past that date and sets `delisted_in_window` from it.
+- **A ticker is reused.** 303 of those 3,104 ended firms still answer to a live
+  series under their last panel ticker, and for 202 the series begins after the
+  listing end, so it is another company's. On the December universe of the ghost
+  study that is 120 firms and 544 firm-years counted as priced, of which 114
+  firm-years over 25 firms also pass the 14-day fresh-close test at a snapshot
+  preceding the listing end. Every one of those 25 is a series that spans the
+  listing end rather than a reissue: a reissued symbol has no close before the
+  end date, so it never passes an entry test and its exposure is entirely in the
+  forward window. Keep `listed_until` on the frame you pass to `forward_paths`:
+  it reads no return past that date and sets `delisted_in_window` from it.
 - There is no market capitalisation and no share count on the panel row, so a
   size control has to use revenue, which conflates scale with business model.
 - The `ticker` is current, is not point-in-time, and is sometimes not the common

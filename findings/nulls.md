@@ -25,6 +25,12 @@ measurement. The honest denominator is **66.8% of the panel's 45,428 December
 firm-years**. Every drawdown rate, every tail share and every fall count below
 is a floor, and nothing in this data bounds by how much.
 
+The Stooq index behind that rate read the bundle's fund folders alongside its
+equity folders, so a delisted issuer whose symbol a fund now carries counted as
+priced. The reader is equities only from 2026-09-10 and this study was not re-run:
+the rate stands at its own vintage and is overstated by roughly what entry 21 of
+[CORRECTIONS.md](../CORRECTIONS.md) measures, 0.44pp of December firm-years.
+
 ---
 
 ## 1. The sector capex clock: +0.21 raw, +0.006 against the market

@@ -39,6 +39,12 @@ to this asset:
 | in the paths file | 28,803 | 2,967 | 63.40% |
 | carries a capitalisation | **12,706** | **1,744** | **27.97%** |
 
+The Stooq index behind that rate read the bundle's fund folders alongside its
+equity folders, so a delisted issuer whose symbol a fund now carries counted as
+priced. The reader is equities only from 2026-09-10 and this study was not re-run:
+the rate stands at its own vintage and is overstated by roughly what entry 21 of
+[CORRECTIONS.md](../CORRECTIONS.md) measures, 0.44pp of December firm-years.
+
 The cached `/history` set is the toolkit's own sweep pool, 2,047 tickers chosen
 for being priced with revenue over $300m in 2019-2025. **98.69% of capped
 firm-years are sweep-pool tickers**, and 78.84% of sweep-pool rows in 2017-2025
