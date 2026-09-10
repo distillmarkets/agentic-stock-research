@@ -227,3 +227,16 @@ def test_panel_path_prefers_full_export_over_sample(cache):
     assert client.panel_path() == cache / "pit-sample.csv.gz"
     (cache / "panel.csv").write_text("")
     assert client.panel_path() == cache / "panel.csv"
+
+
+# Synthetic cache entries; no real response appears here.
+def test_cached_reads_the_file_without_a_request(cache):
+    _write_cached(cache, "/api/v1/thing", {"ok": 1})
+    assert client.cached("/api/v1/thing") == {"ok": 1}
+    assert client.cached("/api/v1/never-asked") is None
+
+
+def test_cached_treats_an_error_entry_as_no_response(cache):
+    f = client._cache_key("GET", "/api/v1/gone", None, None)
+    f.write_text(json.dumps({client.ERROR_KEY: {"status": 404, "body": {"detail": "no"}}}))
+    assert client.cached("/api/v1/gone") is None

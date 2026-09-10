@@ -268,6 +268,23 @@ def is_cached(path: str, **params) -> bool:
     return _cache_key("GET", path, params or None, None).exists()
 
 
+def cached(path: str, **params) -> dict | list | None:
+    """The cached response for this exact GET, or ``None`` when it is not on disk.
+
+    A file read, not a request: it cannot reach the network under any setting,
+    so a reproduction that has replaced ``get`` with a raiser can still read
+    what an earlier run fetched. ``None`` for a call never made, and for a
+    cached error entry, which is not a response.
+    """
+    p = _cache_key("GET", path, params or None, None)
+    if not p.exists():
+        return None
+    body = json.loads(p.read_text())
+    if isinstance(body, dict) and ERROR_KEY in body:
+        return None
+    return body
+
+
 def get_paged(path: str, limit: int = 500, **params):
     """Yield successive pages of a paged endpoint, following ``nextOffset``.
 

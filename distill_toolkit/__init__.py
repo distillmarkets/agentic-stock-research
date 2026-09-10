@@ -9,6 +9,8 @@ Modules
     client   cached, latency-logging client for the Distill Markets API, with an
              offline mode that refuses any call not already on disk
     stooq    readers for Stooq end-of-day files you have downloaded yourself
+    sec_tickers  reader for the SEC's company_tickers.json, the free current
+             registrant list, which you have downloaded yourself
     joins    split-basis checks and inference, market capitalisation, return
              decomposition, forward returns
     analysis record anchors and exits, forward paths, event windows, segments,

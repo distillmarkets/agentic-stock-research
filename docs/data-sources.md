@@ -52,6 +52,35 @@ returns and omit dividends. The file set is current listings only, so
 delisted issuers are absent and any historical cohort is biased toward
 survivors. See `docs/traps.md`.
 
+## SEC `company_tickers.json`
+
+The SEC publishes a free file mapping every current registrant's CIK to its
+current ticker or tickers and its company name. The toolkit reads that file
+from your disk (`distill_toolkit/sec_tickers.py`). It never contacts sec.gov.
+
+The file is a US federal government work and is in the public domain, so there
+is no licence to comply with. There is an access condition: the SEC asks
+automated requests to declare who is making them in the User-Agent, and rate
+limits at ten requests a second. You fetch it yourself, once:
+
+```
+mkdir -p cache/sec && curl -A "Your Name your@email.example" \
+  -o cache/sec/company_tickers.json \
+  https://www.sec.gov/files/company_tickers.json
+```
+
+Point `SEC_TICKERS` at it, or leave it where the command above puts it. Do not
+commit it: `scripts/check_hygiene.py` fails the build on a tracked `.json`, and
+a committed copy is a stale copy the day after it is written.
+
+Three properties of the file shape every result computed from it. It is a
+snapshot of who is registered **now**, so a company whose listing has ended is
+absent and nothing records that it was ever present. No row carries a date, so
+the file's only vintage is when you downloaded it. And the symbol is reused:
+a ticker freed by a delisting is reissued, so a ticker join to this file names
+whoever holds the symbol today. See `docs/traps.md`, trap 19, and
+`research/naming-the-dead/` for the measured rates.
+
 ## Adding a source
 
 A new source gets an entry here and in NOTICE before any example uses it. The

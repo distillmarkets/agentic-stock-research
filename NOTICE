@@ -25,6 +25,13 @@ complying with each source's terms.
    Stooq discloses on its site. The publisher has not verified Stooq's current
    terms and makes no statement about what they permit. Do your own diligence.
 
+3. SEC `company_tickers.json` (sec.gov). The free current-registrant list.
+   This project includes no downloader; you obtain the file manually. It is a
+   US federal government work and is in the public domain, so no licence
+   attaches to it. The SEC does ask that automated requests declare a
+   contact in the User-Agent and stay within its rate limits; meeting that is
+   your responsibility. See docs/data-sources.md.
+
 TRADEMARKS
 
 "Distill Markets" is a trademark of Distill Markets Pty Ltd. Apache-2.0
