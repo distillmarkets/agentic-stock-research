@@ -71,6 +71,11 @@ reproductions under it.
   pool and not a universe rate (traps 1, 2, 13).
 - A Form 4 row carries the transaction date, not the filing date (trap 11).
 - A 404 means uncovered or nonexistent and does not say which (trap 6).
+- A name is not a free key. The SEC's `company_tickers.json` names 88.7% of
+  the panel's still-listed filers and 1 of the 3,104 whose listing has ended,
+  and a ticker join to it returns another company for every ended filer whose
+  symbol is still in it. Key identity on the CIK, and where you must ask by
+  ticker, check the CIK that comes back (trap 19).
 
 ## What a study has to contain
 

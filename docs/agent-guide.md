@@ -177,6 +177,8 @@ in the order they tend to be hit:
 | 15 | a "next" fiscal year is usually the one the price already ran through | a December snapshot's next filed year overlaps the price window completely on 72% of rows; date every period from `periodEnd` |
 | 16 | a December panel row's annual figures are a median 275 days old | a fiscal year enters the panel at 74% of March quarter-ends, so anchor on the record refresh rather than on the December row |
 | 17 | cumulative paths do not difference into segment returns | compound each segment from its own start, or compute daily abnormal returns bar to bar |
+| 18 | a reused symbol in the price bundle may not be a company at all | a delisted issuer's ticker resolves to a fund file; `stooq.index` is equities only, and the diff against `include_etfs=True` is the exposure |
+| 19 | a delisted company cannot be named from the free SEC file, and asking by ticker names someone else | 0.0% of 3,104 ended filers are nameable from `company_tickers.json` against 88.7% of the listed; the ticker-keyed profile route returned a different CIK on 12.4% of them |
 
 Two more shapes worth knowing before you design around them:
 
@@ -185,8 +187,11 @@ Two more shapes worth knowing before you design around them:
   (`DTB` for DTE Energy, `PFH` for Prudential Financial). Ticker collisions also
   exist in both directions: some tickers map to more than one CIK across the
   export, and some resolve at SEC to a different CIK than the panel gives. Join
-  on CIK wherever both sides carry one, and treat a ticker join as the source of
-  a few per cent of silent misses.
+  on CIK wherever both sides carry one. The cost of not doing so is measured:
+  over the 3,104 panel firms whose listing has ended, a ticker-keyed
+  `/sec/profile` lookup returned a different CIK 386 times, 12.4%, and a ticker
+  join to the SEC's own current file returned another company for all 266 whose
+  symbol was still in it (trap 19, `research/naming-the-dead/`).
 - **Endpoint coverage is not universe coverage.** Firms present in the current
   panel export can 404 on `/history` under the panel's own ticker. Measured on a
   300-firm sample of a December-2017 universe, 65.0% [59.6, 70.4] are served

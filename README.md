@@ -95,7 +95,7 @@ claude mcp add --transport http distill https://mcp.distillmarkets.com \
 In claude.ai or Claude Desktop, add a connector at `mcp.distillmarkets.com`.
 
 For studies, the agent works in this checkout. [AGENTS.md](AGENTS.md) is the
-brief: what the two sources are for, the eighteen ways the join goes wrong,
+brief: what the two sources are for, the nineteen ways the join goes wrong,
 what a finished study has to contain, and how to spend an API budget. Point
 Claude Code, Codex, or any agent that reads `AGENTS.md` at the checkout and
 ask the question. Two roles are defined in [agents/](agents/README.md): a
@@ -133,15 +133,15 @@ Tests are synthetic and live under `tests/`; `pytest` and
 
 | path | what it is |
 |---|---|
-| `distill_toolkit/` | the package: `client`, `stooq`, `joins`, `analysis`, `charts` |
+| `distill_toolkit/` | the package: `client`, `stooq`, `sec_tickers`, `joins`, `analysis`, `charts` |
 | `examples/` | runnable scripts, from an endpoint sweep to a panel study |
 | `scripts/` | the hygiene check CI runs, and the cut that produces the published sample |
 | `findings/` | ten studies, each with its vintage; the reproducing script ships for one and is available on request for the rest. [Index](findings/README.md) |
 | `CORRECTIONS.md` | the dated log of numbers and helpers that did not survive review |
-| `docs/traps.md` | eighteen mistakes a fundamentals-to-prices join invites |
+| `docs/traps.md` | nineteen mistakes a fundamentals-to-prices join invites |
 | `docs/adding-a-source.md` | how to add another file-on-disk source, the way the Stooq reader was added |
 | `docs/agent-guide.md` | the long form of `AGENTS.md`: shapes, helpers, budget |
-| `research/` | one worked example: a study, the review that broke two of its claims, and the corrected re-run. [Index](research/README.md) |
+| `research/` | worked examples: a study beside the review that broke two of its claims and the corrected re-run, and two studies of what the record does and does not carry. [Index](research/README.md) |
 | `templates/study/` | the skeleton of a new study |
 | `agents/` | the study and review roles, for Claude Code, Codex and any tool that reads `AGENTS.md` |
 | [Releases](https://github.com/distillmarkets/agentic-stock-research/releases) | the point-in-time sample: 200 filers, every quarter since 2009, no key needed |

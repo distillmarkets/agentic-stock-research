@@ -291,6 +291,58 @@ whole bundle, and `stooq.bars(t, include_etfs=True)` shows what it was reading.
 A symbol in both sets would be resolved to the equity file, so the diff is the
 whole exposure. CORRECTIONS.md entry 21 has the measurement.
 
+## Trap 19: a company that has delisted cannot be named from the free SEC file, and asking by ticker names someone else
+
+The SEC's `company_tickers.json` is the free identity layer everything reaches
+for first. It is a list of CURRENT registrants. A company whose listing has
+ended leaves it, and nothing in it records that the company was ever there, so
+a name-keyed join to any outside dataset (a trial registry, a patent assignee
+table, a press archive, most commercial sets) silently drops exactly the
+cohort a survivorship measurement is trying to count.
+
+Measured on one 6,955-CIK panel against the file as held 2026-09-11: **3,415 of
+3,851 still-listed filers (88.7%) are nameable from it and 1 of the 3,104 with
+a listing end (0.0%)**. The four listing-end sources agree to the row; this is
+not thin coverage, it is a file that does not hold the names.
+
+Joining on the ticker instead makes it worse and does so quietly. For **266 of
+the 3,104** ended filers the last panel ticker IS in the current file, and in
+**none of the 266** does it point at the filer that held it. A symbol freed by
+a delisting is reissued, so a ticker join answers "who holds it today".
+
+The publisher's own `/sec/profile/{ticker}` covers the gap and carries its own
+defect, measured on the same 3,104: it returned a name for all of them, and
+**386 (12.4%) carried a different CIK from the one asked about**, so the name
+belongs to another company. The response's `source` field says which resolution
+path ran, and the defect is concentrated in one: `sec-edgar` returned the
+asked-for CIK 0 times out of 245, against 4.7% wrong on
+`submissions-dead-crawl` and 9.9% on `ticker-history-fallback`.
+
+Protocol: key identity on the CIK, never on the ticker. When you must ask by
+ticker, compare `cikNumber` in the response against the CIK you asked about and
+drop the row when they differ; both fields are served, so the check is free.
+
+```python
+from distill_toolkit import client, sec_tickers
+
+free = sec_tickers.index()              # {cik: {"name": ..., "tickers": [...]}}
+named = panel.cik.isin(free)            # the honest denominator for a name join
+
+prof = client.get(f"/api/v1/sec/profile/{ticker}")
+if int(prof["cikNumber"]) != cik:       # another company's name
+    ...
+```
+
+The 386 are three different situations and flattening them is its own error. A
+`migration` row is wrong 87.1% of the time because a migration IS a CIK moving,
+so the endpoint is exposing a real successor (`GOOG` to Alphabet, `ETN` to
+Eaton Corp plc). Others are an unrelated company that took the symbol later
+(`BEAM`, a spirits maker, resolving to Beam Therapeutics) and a few resolve
+backwards to a predecessor (`DTV` to DIRECTV GROUP INC). Timing does not sort
+them: Alphabet arrives 181 days after Google's listing end and Dow Inc 942
+days after Dow Chemical's, and both are successors.
+`research/naming-the-dead/` has the census.
+
 ## Verification protocol
 
 Every load-bearing figure in `findings/` was checked at least two ways.
