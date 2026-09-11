@@ -137,7 +137,7 @@ Tests are synthetic and live under `tests/`; `pytest` and
 
 | path | what it is |
 |---|---|
-| `distill_toolkit/` | the package: `client`, `stooq`, `sec_tickers`, `joins`, `analysis`, `charts` |
+| `distill_toolkit/` | the package: `client`, `stooq`, `sec_tickers`, `names`, `joins`, `analysis`, `charts` |
 | `examples/` | runnable scripts, from an endpoint sweep to a panel study |
 | `scripts/` | the hygiene check CI runs, and the cut that produces the published sample |
 | `findings/` | eleven studies, each with its vintage; the reproducing scripts ship for two and are available on request for the rest. [Index](findings/README.md) |

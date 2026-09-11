@@ -346,6 +346,28 @@ knowing before the study is written.
 stopped trading is refused rather than returned as a price; `split_scan` lists
 the day-over-day moves worth resolving before a long-window return is trusted.
 
+### `names`, a filer against a company name somewhere else
+
+`match` takes `{cik: [names]}` and the name column of another dataset and
+returns the pairs plus the diagnostics a study is required to report; `core`,
+`usable` and `rule` are the pieces, exposed so a study can show its working on
+a disputed pair. Four rules, strongest first, each requiring a shared head
+token below exact equality, and a candidate name claimed by two filers is
+dropped whole rather than assigned to a guess.
+
+Two things to get right when you use it. **Feed it former names.** SEC's
+per-CIK submissions file carries them, they cost nothing, and they are the
+cheapest recall available; a company that renamed itself is otherwise a miss.
+**And report `keysUnmatchableByName` in your denominator.** A filer whose only
+name is not distinctive enough to match on never had a chance, so a match rate
+quoted over the filers that could match is not a coverage claim.
+
+Do not quote the module's own precision as yours. Hand-read a sample of your
+pairs and report that number, the way the studies that use it do. The
+vocabulary in `STOPWORDS` is the one those numbers were measured on; widening
+it with `extra_stopwords` is a precision trade and the module docstring has the
+worked example of it going wrong.
+
 ### `client`, the API
 
 `get`, `post`, `get_paged`, `download` and `is_cached` are the call surface;

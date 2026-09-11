@@ -11,6 +11,8 @@ Modules
     stooq    readers for Stooq end-of-day files you have downloaded yourself
     sec_tickers  reader for the SEC's company_tickers.json, the free current
              registrant list, which you have downloaded yourself
+    names    match a filer to a company name in an outside dataset, on the name
+             alone, with the diagnostics a study has to report
     joins    split-basis checks and inference, market capitalisation, return
              decomposition, forward returns
     analysis record anchors and exits, forward paths, event windows, segments,
