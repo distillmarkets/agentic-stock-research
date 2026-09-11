@@ -16,11 +16,12 @@ in [CORRECTIONS.md](../CORRECTIONS.md) supersedes the same number anywhere else.
 | [post-filing-drift.md](post-filing-drift.md) | After a weak revenue print enters the record, the decile whose revenue growth accelerated most runs about 2 points below the decile that decelerated most over the next six weeks. That is the whole of the drift. |
 | [share-issuance.md](share-issuance.md) | The heaviest-issuing fifth is in the two-year tail 33% of the time against 13%. It is a firm type visible years earlier, not a timing signal; buybacks time nothing. |
 | [market-cap.md](market-cap.md) | A point-in-time market cap from on-file shares and the close. Value sorts on this data are not a base rate: the sign flips by entry year. |
+| [naming-the-dead.md](naming-the-dead.md) | The free SEC company list names 95.3% of the filers still filing and none of the 3,104 whose listing has ended. Asked by ticker, 266 of those come back as a different company, and the publisher's own lookup returns the wrong company 12.4% of the time. |
 | [nulls.md](nulls.md) | Six results that did not survive their control: 13F crowding, capex clocks, the correcting filing, record change leading price, and more. |
 
 Charts for every study are under [charts/](charts/). Each document names the
-script under `research/` that reproduces it. One of them, the pre-exit signature, is kept in the checkout as the worked
-example with its review and corrected re-run ([../research/](../research/)); every other
+script under `research/` that reproduces it. Two of them, the pre-exit signature and the identity census, are kept in the checkout as the
+worked examples with their reviews ([../research/](../research/)); every other
 script named here is held by the publisher and available on request (open an issue at
 https://github.com/distillmarkets/agentic-stock-research/issues).
 

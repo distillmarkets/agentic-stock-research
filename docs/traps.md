@@ -291,7 +291,7 @@ whole bundle, and `stooq.bars(t, include_etfs=True)` shows what it was reading.
 A symbol in both sets would be resolved to the equity file, so the diff is the
 whole exposure. CORRECTIONS.md entry 21 has the measurement.
 
-## Trap 19: a company that has delisted cannot be named from the free SEC file, and asking by ticker names someone else
+## Trap 19: no free source maps a delisted company's ticker back to it, and asking by ticker names someone else
 
 The SEC's `company_tickers.json` is the free identity layer everything reaches
 for first. It is a list of CURRENT registrants. A company whose listing has
@@ -300,10 +300,20 @@ a name-keyed join to any outside dataset (a trial registry, a patent assignee
 table, a press archive, most commercial sets) silently drops exactly the
 cohort a survivorship measurement is trying to count.
 
-Measured on one 6,955-CIK panel against the file as held 2026-09-11: **3,415 of
-3,851 still-listed filers (88.7%) are nameable from it and 1 of the 3,104 with
-a listing end (0.0%)**. The four listing-end sources agree to the row; this is
-not thin coverage, it is a file that does not hold the names.
+Measured on one 6,955-CIK panel against the file as held 2026-09-11, on three
+cohorts rather than two, because a firm with no dated listing end is not
+necessarily still trading:
+
+| cohort | n | nameable | share |
+|---|---|---|---|
+| still filing at the panel's last snapshot | 3,283 | 3,129 | **95.3%** |
+| stopped filing, no Form 25 or Form 15 on file | 568 | 286 | **50.4%** |
+| listing ended, dated | 3,104 | 1 | **0.0%** |
+
+The four listing-end sources agree to the row; this is not thin coverage, it is
+a file that does not hold the names. Pooling the first two cohorts, as the first
+draft of the census did, gives 88.7% and understates the contrast
+([CORRECTIONS.md](../CORRECTIONS.md) entry 22).
 
 Joining on the ticker instead makes it worse and does so quietly. For **266 of
 the 3,104** ended filers the last panel ticker IS in the current file, and in
@@ -318,7 +328,19 @@ path ran, and the defect is concentrated in one: `sec-edgar` returned the
 asked-for CIK 0 times out of 245, against 4.7% wrong on
 `submissions-dead-crawl` and 9.9% on `ticker-history-fallback`.
 
-Protocol: key identity on the CIK, never on the ticker. When you must ask by
+**Hold the CIK and the free layer is adequate.** This trap is about the
+DIRECTION of the lookup, not about availability.
+`https://data.sec.gov/submissions/CIK##########.json` is free, served per CIK,
+and on this same census named **3,104 of 3,104** ended filers, with **1,741
+(56.1%) carrying former names** for the company asked about. It also reports the
+company as gone rather than silently: only 4 of the 3,104 still list a ticker
+and 3 still name an exchange, because SEC clears those fields when a
+registration ends. What has no free route is the other direction, from a symbol
+to the CIK for a company that is gone: `company_tickers.json` is the only free
+symbol map SEC publishes, and it holds 0 of the 3,104.
+
+Protocol: key identity on the CIK, never on the ticker. With a CIK, take the
+name from SEC's per-CIK submissions file and pay nothing. When you must ask by
 ticker, compare `cikNumber` in the response against the CIK you asked about and
 drop the row when they differ; both fields are served, so the check is free.
 
@@ -341,7 +363,8 @@ Eaton Corp plc). Others are an unrelated company that took the symbol later
 backwards to a predecessor (`DTV` to DIRECTV GROUP INC). Timing does not sort
 them: Alphabet arrives 181 days after Google's listing end and Dow Inc 942
 days after Dow Chemical's, and both are successors.
-`research/naming-the-dead/` has the census.
+`findings/naming-the-dead.md` has the census and
+`research/review-naming-the-dead/` has the review that bounded it.
 
 ## Verification protocol
 

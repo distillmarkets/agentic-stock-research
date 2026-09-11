@@ -1,5 +1,15 @@
 # The free identity file names 88.7% of the panel's listed filers and 1 of the 3,104 whose listing has ended; the API lookup names all 3,104 and 12.4% of the time the name it returns is another company's
 
+**Superseded in part.** The review in
+[`../review-naming-the-dead/`](../review-naming-the-dead/) split the "still
+listed" pool, which was two populations, and the headline is 95.3% against 0.0%
+rather than 88.7% against 0.0%; it also showed that SEC's own per-CIK
+submissions file names 3,104 of 3,104 ended filers, so the claim this document
+invites about free data is false in the direction it is usually read
+(`CORRECTIONS.md` entries 22, 23 and 24). The published version is
+[`../../findings/naming-the-dead.md`](../../findings/naming-the-dead.md). This
+document is kept as the first draft the review was run against.
+
 A census of 6,955 filers, not a sample. Every rate below is a population rate
 over the whole panel, so none of them carries a sampling interval and none of
 them needs a placebo: there is no draw to shuffle.

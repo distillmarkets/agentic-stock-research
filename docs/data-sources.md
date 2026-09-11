@@ -79,7 +79,17 @@ absent and nothing records that it was ever present. No row carries a date, so
 the file's only vintage is when you downloaded it. And the symbol is reused:
 a ticker freed by a delisting is reissued, so a ticker join to this file names
 whoever holds the symbol today. See `docs/traps.md`, trap 19, and
-`research/naming-the-dead/` for the measured rates.
+[`../findings/naming-the-dead.md`](../findings/naming-the-dead.md) for the
+measured rates.
+
+**Holding a CIK, you do not need this file.** SEC serves
+`https://data.sec.gov/submissions/CIK##########.json` per CIK on the same terms,
+and it names a company whose listing ended: 3,104 of 3,104 on the census in that
+document, 56.1% of them with the company's own former names, and with the ticker
+and exchange fields cleared so the record states the registration has ended.
+What it cannot do is take you from a symbol to a CIK, which is the only
+direction `company_tickers.json` serves and the direction in which nothing free
+covers a delisted company. The toolkit ships no downloader for either file.
 
 ## Adding a source
 

@@ -622,6 +622,63 @@ small number of their priced firm-years were a fund's price history.
 
 ---
 
+## 2026-09-11
+
+### 22. The identity census measured its headline on a pool that was two populations
+
+`research/naming-the-dead/` split the panel on `listed_until` alone and called
+every firm without it "still listed", reporting **88.7% nameable from the free
+SEC file** against 0.0% for the 3,104 with a dated listing end. The adversarial
+review (`research/review-naming-the-dead/`) found that **568 of those 3,851
+firms have no row at the panel's final snapshot**: they stopped filing and
+simply carry no Form 25 and no Form 15. They are the same 568 that
+`findings/ghost-cohort.md` already describes as firms whose panel exit is "an
+inference from a CIK's last row".
+
+On the three cohorts the corrected figures are **95.3% (3,129 of 3,283) for
+firms still filing, 50.4% (286 of 568) for firms that stopped filing with no
+exit form, and 0.0% (1 of 3,104) for a dated listing end.** The contrast the
+study reports is wider under the correction, not narrower. A second reading in
+the first draft does not survive at all: the residual was described as the
+SEC's list missing 11.3% of live filers, and **282 of those 436 misses (64.7%)
+are firms that stopped filing.** The real gap for a current filer is 154 of
+3,283, **4.7%**.
+
+**88.7% is superseded by 95.3% wherever it appears**, including `docs/traps.md`
+trap 19, which now carries the three-cohort table.
+
+### 23. "A delisted company cannot be named from free data" was never measured
+
+`research/naming-the-dead/` is careful to scope its measurement to the free
+bulk file, but its framing invites the stronger reading, and `docs/traps.md`
+trap 19 carried the stronger reading in its title. The review tested it:
+`https://data.sec.gov/submissions/CIK##########.json` is free, served per CIK,
+and named **3,104 of 3,104** ended firms, 100.0% on every listing-end source,
+with **1,741 (56.1%) also carrying former names** for the company asked about.
+Only 4 of the 3,104 still list a ticker and 3 still name an exchange, because
+SEC clears those fields when a registration ends, so that file also states the
+company is gone.
+
+**"A delisted company cannot be named from free data" is withdrawn.** The
+measured statement that replaces it is about direction, not availability: the
+per-CIK file answers "what is this CIK called" and requires the CIK to ask,
+while a name-keyed or symbol-keyed join is trying to find the CIK. In that
+direction `company_tickers.json` is the only free map SEC publishes and it holds
+0 of the 3,104. No number in the study moves; what changes is what the numbers
+are allowed to mean.
+
+### 24. The identity census keyed its sector pool on the ticker
+
+`t7_healthcare` built its pool with `groupby("ticker").tail(1)`, which collapses
+a Healthcare symbol used by two filers onto the later holder and drops the
+earlier one. The dropped firm is by construction the one whose listing ended.
+Keyed on the CIK the pool is **1,167 firms, 649 still listed and 518 with a
+listing end**, against the published 1,157 / 649 / 508. Both nameable shares are
+unchanged to the decimal (90.4% and 0.2%); what moves is the count of firms a
+name-keyed join loses, from 570 to 579.
+
+---
+
 General information from public SEC filings, not financial product advice.
 Companies are named above only as facts they exhibit in the data. See the
 [disclosure](README.md#disclosure).

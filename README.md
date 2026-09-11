@@ -21,6 +21,10 @@ together.
 
 **Free price data leaves out the companies that failed.** A current-listings price file has no series for close to a third of SEC filer-years since 2010, because those firms later delisted. The missing share rises as financial health falls, so any backtest on that file is a survivor's result. [How it was measured](findings/ghost-cohort.md)
 
+![Ask the free SEC company list about a company whose listing has ended and it returns a different company or nothing at all](findings/charts/lookup-outcome.png)
+
+**A company that stops trading disappears from the free company list.** All 3,104 filers in this record whose listing has ended are absent from the SEC's free company list, which holds only the companies registered today. Ask for one by the stock symbol it used and 266 come back under a different company's name, with nothing in the answer to say the substitution happened. [How it was measured](findings/naming-the-dead.md)
+
 ## Install
 
 ```
@@ -136,12 +140,12 @@ Tests are synthetic and live under `tests/`; `pytest` and
 | `distill_toolkit/` | the package: `client`, `stooq`, `sec_tickers`, `joins`, `analysis`, `charts` |
 | `examples/` | runnable scripts, from an endpoint sweep to a panel study |
 | `scripts/` | the hygiene check CI runs, and the cut that produces the published sample |
-| `findings/` | ten studies, each with its vintage; the reproducing script ships for one and is available on request for the rest. [Index](findings/README.md) |
+| `findings/` | eleven studies, each with its vintage; the reproducing scripts ship for two and are available on request for the rest. [Index](findings/README.md) |
 | `CORRECTIONS.md` | the dated log of numbers and helpers that did not survive review |
 | `docs/traps.md` | nineteen mistakes a fundamentals-to-prices join invites |
 | `docs/adding-a-source.md` | how to add another file-on-disk source, the way the Stooq reader was added |
 | `docs/agent-guide.md` | the long form of `AGENTS.md`: shapes, helpers, budget |
-| `research/` | worked examples: a study beside the review that broke two of its claims and the corrected re-run, and two studies of what the record does and does not carry. [Index](research/README.md) |
+| `research/` | worked examples: two studies beside the reviews that broke claims in each, one with the corrected re-run, and a study of how long the record takes to catch up with a delisting. [Index](research/README.md) |
 | `templates/study/` | the skeleton of a new study |
 | `agents/` | the study and review roles, for Claude Code, Codex and any tool that reads `AGENTS.md` |
 | [Releases](https://github.com/distillmarkets/agentic-stock-research/releases) | the point-in-time sample: 200 filers, every quarter since 2009, no key needed |

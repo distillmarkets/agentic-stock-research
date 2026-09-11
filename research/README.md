@@ -12,13 +12,14 @@ the pre-registered re-run that reports the corrected range.
 | [`pre-exit-signature-v2/`](pre-exit-signature-v2/) | the re-run, specified before it ran: the base rate as a range over exit definitions, every placebo under the repaired helper |
 
 **What the record carries, and what it does not:** two studies about the data
-itself rather than about a return.
+itself rather than about a return, each with its review.
 
 | folder | what a reader gets from it |
 |---|---|
 | [`listing-end/`](listing-end/) | how long after a firm's last point-in-time row its listing ends, and what its final row looks like against survivors |
 | [`review-listing-end/`](review-listing-end/) | the review of it: which timing claims held, which final-row claim was trimmed, and the match rate the first draft left out |
 | [`naming-the-dead/`](naming-the-dead/) | whether a filer can be named at all: 88.7% of listed filers against 1 of 3,104 whose listing has ended, and the 12.4% of ticker-keyed name lookups that return a different company |
+| [`review-naming-the-dead/`](review-naming-the-dead/) | the review of it: the cohort the headline was measured on was not what its label said, and SEC's own per-CIK file answers a question the free bulk file cannot |
 
 Inputs are `cache/panel.csv` from
 [`examples/fetch_panel.py`](../examples/fetch_panel.py) on a Pro key or the
