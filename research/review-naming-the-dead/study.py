@@ -11,8 +11,12 @@ cut on, and to the scope of the claim.
     R3  the scope: does SEC's own free per-CIK submissions file name the dead
     R4  the sector cut, re-keyed on the CIK instead of the ticker
 
-Every number in README.md comes out of this script. Run from the repository
-root, after ``probe_submissions.py`` has filled the cache:
+Every number in README.md comes out of this script. R3 needs SEC's per-CIK
+submissions records reduced to ``submissions.csv`` under this study's cache
+folder; this repository ships no downloader for them and
+``docs/data-sources.md`` has the fetch. R3 is skipped with a printed note when
+that file is absent, and the other three checks still run. From the repository
+root:
 
     SEC_TICKERS=cache/sec/company_tickers.json \\
     DISTILL_OFFLINE=1 ./.venv/bin/python research/review-naming-the-dead/study.py
@@ -209,7 +213,7 @@ def r2_chart(tab: pd.DataFrame, vintage: str) -> Path:
 def r3_submissions(firm: pd.DataFrame) -> tuple[pd.DataFrame, dict] | tuple[None, None]:
     path = OUT / "submissions.csv"
     if not path.exists():
-        print(f"\nR3 skipped: {path} is not on disk. Run probe_submissions.py first.")
+        print(f"\nR3 skipped: {path} is not on disk. docs/data-sources.md has the fetch.")
         return None, None
     sub = pd.read_csv(path, low_memory=False)
     sub["named"] = sub["name"].fillna("").astype(str).str.len() > 0

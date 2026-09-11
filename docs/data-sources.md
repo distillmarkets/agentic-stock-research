@@ -89,7 +89,27 @@ document, 56.1% of them with the company's own former names, and with the ticker
 and exchange fields cleared so the record states the registration has ended.
 What it cannot do is take you from a symbol to a CIK, which is the only
 direction `company_tickers.json` serves and the direction in which nothing free
-covers a delisted company. The toolkit ships no downloader for either file.
+covers a delisted company. The toolkit ships no downloader for either file, so
+the census in that document is reproduced by fetching them yourself, one
+request per CIK, under the same User-Agent and rate-limit conditions:
+
+```
+mkdir -p cache/sec/submissions
+while read -r cik; do
+  printf -v p 'CIK%010d' "$cik"
+  [ -s "cache/sec/submissions/$p.json" ] || curl -s --compressed \
+    -A "Your Name your@email.example" \
+    -o "cache/sec/submissions/$p.json" \
+    "https://data.sec.gov/submissions/$p.json"
+  sleep 0.125
+done < ciks.txt
+```
+
+`ciks.txt` is one CIK per line, which for that study is the panel's firms whose
+`listed_until` is set. At eight requests a second, SEC's published ceiling being
+ten, 3,104 filers take about ten minutes. Keep the reduced columns you need
+(`name`, `formerNames`, `tickers`, `exchanges`) rather than the payloads; the
+full files are large and nothing here should be committed.
 
 ## Adding a source
 

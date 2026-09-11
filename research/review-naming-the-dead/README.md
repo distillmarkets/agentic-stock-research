@@ -17,12 +17,15 @@ a raiser before anything else is imported. Inputs are `cache/panel.csv` (the
 2009-06-30 to 2026-06-30), `cache/sec/company_tickers.json` as published
 2026-09-11, and the reviewed study's own on-disk tables.
 
-**One check fetches, and it fetches from SEC, not from Distill.** R3 asks
-`data.sec.gov/submissions/CIK##########.json` once for each of the 3,104 ended
-firms, at eight requests a second against SEC's published ceiling of ten.
-`probe_submissions.py` does that and writes one reduced row per CIK to
-`cache/research/review-naming-the-dead/submissions.csv`; `study.py` reads that
-file and never fetches. The full payloads are not kept and nothing is committed.
+**One check needs a file this repository does not ship.** R3 reads SEC's
+per-CIK submissions record for each of the 3,104 ended firms, reduced to one
+row per CIK at
+`cache/research/review-naming-the-dead/submissions.csv` with the columns
+`cik, ticker, listed_until, listing_end_source, name, n_former_names,
+sec_tickers, sec_exchanges, error`. The toolkit carries no downloader for it;
+[`../../docs/data-sources.md`](../../docs/data-sources.md) has the fetch, the
+User-Agent condition and the rate limit. `study.py` reads that file, never
+fetches, and prints a skip note when it is absent.
 
 The reviewed study is a census of a 6,955-firm panel, not a sample from it. That
 removes most of the review contract: there is no null to rebuild, no label to
@@ -111,8 +114,7 @@ route names the dead then the study is about one file rather than about free
 data. A reader deciding what to build needs that distinction, and the reviewed
 README does not draw it.
 
-`probe_submissions.py` asks `data.sec.gov/submissions/CIK##########.json` once
-for each of the 3,104 ended firms, at eight a second:
+Asked once for each of the 3,104 ended firms, at eight a second:
 
 | how the listing ended | n | named | carries former names | still lists a ticker |
 |---|---|---|---|---|
@@ -122,7 +124,7 @@ for each of the 3,104 ended firms, at eight a second:
 | migration | 31 | 31 (100.0%) | | |
 | **all** | **3,104** | **3,104 (100.0%)** | **1,741 (56.1%)** | **4 (0.1%)** |
 
-Zero errors after one retry pass over two read timeouts. The former names are
+Zero errors, after retrying two read timeouts that the first pass hit. The former names are
 the asked-for company's own, unlike the `formerNamesJson` the study examines in
 its post-hoc note, which belongs to whichever company the profile route
 returned. The near-empty ticker and exchange columns are SEC clearing those
